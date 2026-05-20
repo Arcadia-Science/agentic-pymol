@@ -9,7 +9,7 @@ Requires PyMOL 2.6+, [uv](https://docs.astral.sh/uv/), and an MCP client (e.g. C
 1. Clone and sync:
 
    ```bash
-   git clone <this repo>
+   git clone https://github.com/Arcadia-Science/agentic-pymol.git
    cd agentic-pymol
    uv sync
    ```

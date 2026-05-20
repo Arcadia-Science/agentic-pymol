@@ -88,7 +88,7 @@ In your MCP client, ask the model to run the `status` tool. It should return a `
 | Env var | Default | Meaning |
 |---|---|---|
 | `PYMOL_MCP_HOST` | `127.0.0.1` | Plugin socket host |
-| `PYMOL_MCP_PORT` | `9876` | Plugin socket port |
+| `PYMOL_MCP_PORT` | `9877` | Plugin socket port |
 | `PYMOL_MCP_TIMEOUT` | `60.0` | Per-call timeout (seconds). On expiry, an interrupt is fired and `TransportTimeout` is raised. |
 | `PYMOL_MCP_TOKEN` | *(reads `~/.config/pymol-mcp/token`)* | Override the shared-secret token. Useful when PyMOL and the MCP server live on different machines and you copy the token explicitly. |
 

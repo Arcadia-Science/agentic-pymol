@@ -65,7 +65,7 @@ Socket Server for MCP Integration</string>
         <number>65535</number>
        </property>
        <property name="value">
-        <number>9876</number>
+        <number>9877</number>
        </property>
       </widget>
      </item>

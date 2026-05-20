@@ -12,7 +12,7 @@ from agentic_pymol.errors import PyMOLError
 from agentic_pymol.responses import OkResponse
 
 DEFAULT_HOST = "127.0.0.1"
-DEFAULT_PORT = 9876
+DEFAULT_PORT = 9877
 LENGTH_HEADER = struct.Struct(">I")
 MAX_MESSAGE_BYTES = 4 * 1024 * 1024
 DEFAULT_TIMEOUT_SECONDS = 60.0

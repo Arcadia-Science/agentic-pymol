@@ -1,6 +1,6 @@
 """
-Edge-case tests for `pymol_plugin.serialize.serialize` and the wire-level
-size cap enforced in `pymol_plugin.framing.send_message`.
+Edge-case tests for `pymol_plugin.serialize` and the wire-level size cap
+enforced in `pymol_plugin.send_message`.
 
 We don't import optional deps (numpy, chempy) here. Instead, the numpy and
 ChemPy branches are exercised by monkeypatching the `_maybe_*` helpers to
@@ -14,10 +14,9 @@ import struct
 from types import SimpleNamespace
 from typing import Any, cast
 
+import pymol_plugin
 import pytest
-from pymol_plugin import framing
-from pymol_plugin import serialize as serialize_mod
-from pymol_plugin.serialize import serialize
+from pymol_plugin import serialize
 
 
 class TestPrimitives:
@@ -112,7 +111,7 @@ class TestNumpyBranch:
                 return [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]
 
         fake_np = SimpleNamespace(ndarray=FakeArray)
-        monkeypatch.setattr(serialize_mod, "_maybe_numpy", lambda: fake_np)
+        monkeypatch.setattr(pymol_plugin, "_maybe_numpy", lambda: fake_np)
 
         result = serialize(FakeArray())
         assert result == {
@@ -127,7 +126,7 @@ class TestNumpyBranch:
             pass
 
         fake_np = SimpleNamespace(ndarray=FakeNdarray)
-        monkeypatch.setattr(serialize_mod, "_maybe_numpy", lambda: fake_np)
+        monkeypatch.setattr(pymol_plugin, "_maybe_numpy", lambda: fake_np)
 
         assert serialize([1, 2, 3]) == [1, 2, 3]
 
@@ -141,7 +140,7 @@ class TestNumpyBranch:
                 return [1.0, float("nan"), float("inf")]
 
         fake_np = SimpleNamespace(ndarray=FakeArray)
-        monkeypatch.setattr(serialize_mod, "_maybe_numpy", lambda: fake_np)
+        monkeypatch.setattr(pymol_plugin, "_maybe_numpy", lambda: fake_np)
 
         result = serialize(FakeArray())
         assert result["data"] == [1.0, None, None]
@@ -166,7 +165,7 @@ class TestChempyBranch:
         model = FakeIndexed()
         model.atom = [atom1, atom2]  # type: ignore
 
-        monkeypatch.setattr(serialize_mod, "_maybe_chempy_indexed", lambda: FakeIndexed)
+        monkeypatch.setattr(pymol_plugin, "_maybe_chempy_indexed", lambda: FakeIndexed)
 
         result = serialize(model)
         assert result["_kind"] == "model"
@@ -185,7 +184,7 @@ class TestChempyBranch:
         model = FakeIndexed()
         model.atom = [atom]  # type: ignore[attr-defined]
 
-        monkeypatch.setattr(serialize_mod, "_maybe_chempy_indexed", lambda: FakeIndexed)
+        monkeypatch.setattr(pymol_plugin, "_maybe_chempy_indexed", lambda: FakeIndexed)
 
         result = serialize(model)
         assert result["atoms"][0]["b"] is None
@@ -201,7 +200,7 @@ class TestChempyBranch:
         model = FakeIndexed()
         model.atom = [bare]  # type: ignore
 
-        monkeypatch.setattr(serialize_mod, "_maybe_chempy_indexed", lambda: FakeIndexed)
+        monkeypatch.setattr(pymol_plugin, "_maybe_chempy_indexed", lambda: FakeIndexed)
 
         result = serialize(model)
         assert result["atoms"] == [{}]
@@ -209,13 +208,17 @@ class TestChempyBranch:
 
 
 class TestSendMessageSizeCap:
-    """The 4 MB cap is enforced in framing.send_message; oversize payloads are
+    """The 4 MB cap is enforced in pymol_plugin.send_message; oversize payloads are
     replaced on the wire with a ResponseTooLarge error envelope."""
 
     def test_oversize_payload_is_replaced(self) -> None:
-        oversized = {"ok": True, "value": "x" * (framing.MAX_MESSAGE_BYTES + 100), "stdout": ""}
+        oversized = {
+            "ok": True,
+            "value": "x" * (pymol_plugin.MAX_MESSAGE_BYTES + 100),
+            "stdout": "",
+        }
         sock = _RecordingSocket()
-        framing.send_message(cast(socket.socket, sock), oversized)
+        pymol_plugin.send_message(cast(socket.socket, sock), oversized)
         body = _extract_body(sock.written)
         decoded = json.loads(body)
         assert decoded["ok"] is False
@@ -225,7 +228,7 @@ class TestSendMessageSizeCap:
         body_size = 1000
         payload = {"ok": True, "value": "y" * body_size, "stdout": ""}
         sock = _RecordingSocket()
-        framing.send_message(cast(socket.socket, sock), payload)
+        pymol_plugin.send_message(cast(socket.socket, sock), payload)
         body = _extract_body(sock.written)
         decoded = json.loads(body)
         assert decoded["ok"] is True
@@ -238,7 +241,7 @@ class TestSendMessageSizeCap:
 
         sock = _RecordingSocket()
         payload = {"ok": True, "value": Custom(), "stdout": ""}
-        framing.send_message(cast(socket.socket, sock), payload)
+        pymol_plugin.send_message(cast(socket.socket, sock), payload)
         body = _extract_body(sock.written)
         decoded = json.loads(body)
         assert decoded["value"] == "<Custom>"

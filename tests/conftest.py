@@ -226,9 +226,8 @@ def plugin_module() -> Iterator[Any]:
     import logging
 
     import pymol_plugin
-    import pymol_plugin.auth
 
-    pymol_plugin.auth._token = None
+    pymol_plugin._token = None
     pymol_plugin.socket_server = None
     pymol_plugin.listening = False
     logging.getLogger("pymol-mcp-plugin").setLevel(logging.CRITICAL)
@@ -264,7 +263,7 @@ def _wait_for_port(host: str, port: int, timeout: float = 2.0) -> None:
 def running_plugin(plugin_module: Any, fake_pymol: FakeCmd) -> Iterator[tuple[str, int]]:
     host = "127.0.0.1"
     port = _free_port()
-    server = plugin_module.server.SocketServer(host=host, port=port)
+    server = plugin_module.SocketServer(host=host, port=port)
     server.start()
     _wait_for_port(host, port)
     yield host, port

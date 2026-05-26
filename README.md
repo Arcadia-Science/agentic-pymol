@@ -38,7 +38,7 @@ Load these two structures, align chain A, report the RMSD, and show the regions 
 ```
 
 ```text
-Which of these 10 binders trigger a conformational shift in the target activation loop (complexes in binders/)?
+Which of these 10 binders trigger a conformational shift in the target activation loop?
 ```
 
 Because the tool surface is typed, agents can reason over results instead of merely seeing that a command succeeded. Distances, RMSDs, object lists, atom counts, coordinates, and views come back as data.
@@ -166,6 +166,7 @@ make pre-commit   # run all hooks against all files
 Agentic PyMOL is not the first PyMOL/LLM integration. Agentic PyMOL is intentionally narrow: a lightweight, typed MCP bridge to the PyMOL installation you already use. These projects explore nearby ideas with different emphases.
 
 - [MCPymol](https://github.com/chemrich/MCPymol) - a PyMOL MCP server and the closest project in spirit to Agentic PyMOL. MCPymol focuses on visualization and domain-specific workflows. Agentic PyMOL focuses on PyMOL itself as the analysis engine: agents can both manipulate the live session and read structured PyMOL-native results back out.
+- [`pymol-agent-bridge`](https://github.com/ANaka/pymol-agent-bridge) - an MCP-less socket bridge that lets terminal-capable agents send Python/PyMOL commands to a live PyMOL session. `pymol-agent-bridge` is a CLI/library bridge, whereas Agentic PyMOL exposes PyMOL through MCP as a discoverable, typed tool surface with structured inputs and outputs.
 - [ChatMol](https://chatmol.github.io/ChatMol/) - a broader molecular-design assistant with a PyMOL plugin, PyMOL skill, Streamlit interface, Python package, and copilot-style workflows. It is closer to a molecular-agent environment than a bridge between your existing LLM agent and PyMOL.
 - [`ravishar313/PyMolAI`](https://github.com/ravishar313/PyMolAI) - an AI-oriented fork of open-source PyMOL with a Qt chat panel, internal PyMOL tools, model-provider integration, and optional OpenBio tools.
 - [`vrtejus/pymol-mcp`](https://github.com/vrtejus/pymol-mcp) - Demonstrates the core value of connecting PyMOL to LLM agents through MCP. Agentic PyMOL builds on that idea with typed tool outputs, structured session readback, and shared-secret authentication.

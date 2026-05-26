@@ -21,12 +21,16 @@ def status() -> Status:
 @mcp.tool()
 def do(command: str) -> str:
     """
-    Run a PyMOL command-line string verbatim through `cmd.do(...)`.
+    ESCAPE HATCH — use only when no dedicated tool covers the operation.
 
-    Use this for any PyMOL CLI command that doesn't have a dedicated tool, e.g.
-    `show cartoon, chain A`, `color red, resi 50-60`, `bg_color white`.
-    Returns whatever PyMOL printed to stdout. Note that `cmd.do` does NOT raise
-    on PyMOL errors — failures appear as text in the returned string.
+    Runs a PyMOL command-line string verbatim through `cmd.do(...)`. The return
+    is unstructured stdout text, so you lose the typed results the dedicated
+    tools provide. Prefer any dedicated tool over `do` whenever one fits; reach
+    for `do` only for PyMOL CLI operations with no first-class tool.
+    Multi-statement strings separated by `;` are fine.
+
+    Caveat: `cmd.do` does NOT raise on PyMOL errors — failures come back as
+    text in the returned string, so inspect the output.
     """
     response = client.call("do", [command], {}, "do")
     return response.stdout
@@ -35,11 +39,18 @@ def do(command: str) -> str:
 @mcp.tool()
 def run(code: str, return_expr: str = "") -> RunResult:
     """
-    Execute arbitrary Python in the PyMOL plugin's namespace.
+    ESCAPE HATCH OF LAST RESORT — use only when neither a dedicated tool nor
+    `do` will work.
 
-    `cmd`, `pymol`, and (if available) `np` are pre-imported. If `return_expr`
-    is non-empty, the plugin evaluates it after `exec` and returns its value
-    serialized.
+    Executes arbitrary Python in the PyMOL plugin's namespace. `cmd`, `pymol`,
+    and (if available) `np` are pre-imported. If `return_expr` is non-empty,
+    the plugin evaluates it after `exec` and returns its value serialized.
+    Stdout and the optional return value come back unstructured.
+
+    Fallback order: prefer a dedicated tool, then `do` for PyMOL CLI commands,
+    then `run`. `run` is appropriate only when you need Python control flow,
+    numpy operations, or PyMOL API surface not exposed via the CLI or other
+    tools.
 
     Security: this is an unsandboxed Python `exec` inside the PyMOL process.
     Anything Python can do — open files, make network calls, import modules,

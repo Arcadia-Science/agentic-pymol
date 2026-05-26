@@ -83,7 +83,7 @@ In PyMOL:
 For Claude Code:
 
 ```bash
-claude mcp add pymol /absolute/path/to/agentic-pymol/.venv/bin/agentic-pymol
+claude mcp add --scope user pymol /absolute/path/to/agentic-pymol/.venv/bin/agentic-pymol
 ```
 
 For Claude Desktop, add this to `~/Library/Application Support/Claude/claude_desktop_config.json`:

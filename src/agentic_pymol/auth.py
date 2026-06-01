@@ -8,9 +8,9 @@ TOKEN_PATH = Path.home() / ".config" / "pymol-mcp" / "token"
 
 
 def load_token() -> str:
-    env = os.environ.get("PYMOL_MCP_TOKEN")
+    env = os.environ.get("PYMOL_MCP_TOKEN", "").strip()
     if env:
-        return env.strip()
+        return env
     if not TOKEN_PATH.exists():
         raise PyMOLError(
             "AuthTokenMissing",
@@ -19,4 +19,13 @@ def load_token() -> str:
             "",
             "",
         )
-    return TOKEN_PATH.read_text().strip()
+    token = TOKEN_PATH.read_text().strip()
+    if not token:
+        raise PyMOLError(
+            "AuthTokenMissing",
+            f"shared-secret token file at {TOKEN_PATH} is empty. Delete it and "
+            f"restart the PyMOL plugin to regenerate, or set PYMOL_MCP_TOKEN.",
+            "",
+            "",
+        )
+    return token

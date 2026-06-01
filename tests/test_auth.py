@@ -1,4 +1,5 @@
 from __future__ import annotations
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -68,3 +69,13 @@ def test_non_string_token_rejected(running_plugin: tuple[str, int]) -> None:
     response = send_recv_raw(host, port, request)
     assert response["ok"] is False
     assert response["error"]["type"] == "Unauthorized"
+
+
+def test_empty_token_source_does_not_authorize_empty_peer(
+    plugin_module: Any, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Tests that empty token file doesn't bypass auth"""
+    monkeypatch.delenv("PYMOL_MCP_TOKEN", raising=False)
+    (tmp_path / "token").write_text("")
+    monkeypatch.setattr(plugin_module, "TOKEN_PATH", tmp_path / "token")
+    assert not plugin_module.token_ok("")

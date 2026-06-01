@@ -194,11 +194,13 @@ def send_message(sock: socket.socket, payload: dict[str, Any]) -> None:
 
 
 def _load_or_create_token() -> str:
-    env = os.environ.get("PYMOL_MCP_TOKEN")
+    env = os.environ.get("PYMOL_MCP_TOKEN", "").strip()
     if env:
-        return env.strip()
+        return env
     if TOKEN_PATH.exists():
-        return TOKEN_PATH.read_text().strip()
+        existing = TOKEN_PATH.read_text().strip()
+        if existing:
+            return existing
     TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
     token = secrets.token_urlsafe(TOKEN_BYTES)
     TOKEN_PATH.write_text(token)

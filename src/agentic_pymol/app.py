@@ -6,6 +6,7 @@ from __future__ import annotations
 import os
 from collections.abc import Callable
 from functools import wraps
+from pathlib import Path
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
@@ -19,11 +20,34 @@ from agentic_pymol.client import (
 )
 from agentic_pymol.errors import PyMOLError
 
+PORT_PATH = Path.home() / ".config" / "pymol-mcp" / "port"
+
+
+def _resolve_port() -> int:
+    """Precedence: `PYMOL_MCP_PORT` env > `~/.config/pymol-mcp/port` written
+    by the plugin on `start()` > `DEFAULT_PORT`.
+
+    The plugin writes the file once its listening socket has actually bound;
+    a missing file means either the plugin isn't running yet (so falling back
+    to the default is as good as anything) or it crashed without cleanup (in
+    which case the connect will fail with the existing ConnectionError, which
+    is the right user-facing signal).
+    """
+    env = os.environ.get("PYMOL_MCP_PORT", "").strip()
+    if env:
+        return int(env)
+    if PORT_PATH.exists():
+        text = PORT_PATH.read_text().strip()
+        if text:
+            return int(text)
+    return DEFAULT_PORT
+
+
 mcp = FastMCP("pymol")
 
 client = PyMOLClient(
     host=os.environ.get("PYMOL_MCP_HOST", DEFAULT_HOST),
-    port=int(os.environ.get("PYMOL_MCP_PORT", DEFAULT_PORT)),
+    port=_resolve_port(),
     timeout=float(os.environ.get("PYMOL_MCP_TIMEOUT", DEFAULT_TIMEOUT_SECONDS)),
 )
 

@@ -151,6 +151,10 @@ On first listen, the plugin auto-generates a token at:
 
 The file is written with mode `0600`. The MCP server reads the same path by default, or you can override it with `PYMOL_MCP_TOKEN`.
 
+### Port discovery
+
+The plugin writes its actually-bound port to `~/.config/pymol-mcp/port` once the listening socket is up, and removes the file on shutdown. The MCP server reads that file when `PYMOL_MCP_PORT` is unset, so changing the port in the plugin's dialog doesn't require any matching change on the server side. Precedence: `PYMOL_MCP_PORT` env > `~/.config/pymol-mcp/port` > default (9877).
+
 ## Development
 
 ```bash

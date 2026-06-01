@@ -1,11 +1,12 @@
 from __future__ import annotations
 from typing import Any, Literal
 
-from agentic_pymol.app import client, mcp
+from agentic_pymol.app import client, mcp, surface_pymol_error
 from agentic_pymol.types import Extent
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_distance(atom1: str, atom2: str, state: int = -1) -> float:
     """
     Distance in Ångströms between two single-atom selections.
@@ -15,6 +16,7 @@ def get_distance(atom1: str, atom2: str, state: int = -1) -> float:
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_extent(selection: str = "all") -> Extent:
     """
     Axis-aligned bounding box of a selection. Coordinates in Ångströms.
@@ -24,6 +26,7 @@ def get_extent(selection: str = "all") -> Extent:
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_object_list(selection: str = "(all)") -> list[str]:
     """List loaded molecular object names matching a selection."""
     response = client.call("get_object_list", [selection], {}, "get_object_list")
@@ -31,6 +34,7 @@ def get_object_list(selection: str = "(all)") -> list[str]:
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_names(
     type: Literal[
         "objects",
@@ -54,6 +58,7 @@ def get_names(
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_chains(selection: str = "all") -> list[str]:
     """Return chain identifiers present in a selection."""
     response = client.call("get_chains", [selection], {}, "get_chains")
@@ -61,6 +66,7 @@ def get_chains(selection: str = "all") -> list[str]:
 
 
 @mcp.tool()
+@surface_pymol_error
 def count_atoms(selection: str = "all", state: int = -1) -> int:
     """Count atoms matching a selection. `state=-1` uses the current state."""
     response = client.call("count_atoms", [selection], {"state": state}, "count_atoms")
@@ -68,6 +74,7 @@ def count_atoms(selection: str = "all", state: int = -1) -> int:
 
 
 @mcp.tool()
+@surface_pymol_error
 def count_states(selection: str = "all") -> int:
     """Number of states (frames / NMR models / MD frames) for an object."""
     response = client.call("count_states", [selection], {}, "count_states")
@@ -75,6 +82,7 @@ def count_states(selection: str = "all") -> int:
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_view() -> list[float]:
     """
     Return the 18-float view matrix: 9 (rotation) + 3 (camera position) + 3
@@ -86,6 +94,7 @@ def get_view() -> list[float]:
 
 
 @mcp.tool()
+@surface_pymol_error
 def set_view(view: list[float], animate: float = 0.0) -> None:
     """
     Restore a view matrix returned by get_view. `animate>0` interpolates
@@ -97,6 +106,7 @@ def set_view(view: list[float], animate: float = 0.0) -> None:
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_coords(selection: str = "all", state: int = 1) -> list[list[float]]:
     """
     Return Nx3 atom coordinates as a list of [x, y, z]. Returns [] for an

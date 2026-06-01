@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from agentic_pymol.app import client, mcp
+from agentic_pymol.app import client, mcp, surface_pymol_error
 from agentic_pymol.types import RunResult, Status
 
 
 @mcp.tool()
+@surface_pymol_error
 def status() -> Status:
     """
     Return a snapshot of the PyMOL session.
@@ -19,6 +20,7 @@ def status() -> Status:
 
 
 @mcp.tool()
+@surface_pymol_error
 def do(command: str) -> str:
     """
     ESCAPE HATCH — use only when no dedicated tool covers the operation.
@@ -37,6 +39,7 @@ def do(command: str) -> str:
 
 
 @mcp.tool()
+@surface_pymol_error
 def run(code: str, return_expr: str = "") -> RunResult:
     """
     ESCAPE HATCH OF LAST RESORT — use only when neither a dedicated tool nor

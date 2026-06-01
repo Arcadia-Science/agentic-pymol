@@ -492,7 +492,7 @@ def make_dialog() -> Any:
     from pymol.Qt.utils import loadUi
 
     dlg = QtWidgets.QDialog()
-    uifile = os.path.join(os.path.dirname(__file__), "plugin.ui")
+    uifile = Path(__file__).parent / "plugin.ui"
     form = loadUi(uifile, dlg)
     form.input_port.setValue(current_port)
     _set_status(form, "Not listening")

@@ -1,11 +1,12 @@
 from __future__ import annotations
 from typing import Any, Literal
 
-from agentic_pymol.app import client, mcp
+from agentic_pymol.app import client, mcp, surface_pymol_error
 from agentic_pymol.types import AlignResult, CEAlignResult
 
 
 @mcp.tool()
+@surface_pymol_error
 def align(
     mobile: str,
     target: str,
@@ -40,6 +41,7 @@ def align(
 
 
 @mcp.tool()
+@surface_pymol_error
 def cealign(mobile: str, target: str, transform: bool = True) -> CEAlignResult:
     """
     Combinatorial Extension structural alignment — sequence-independent.
@@ -53,6 +55,7 @@ def cealign(mobile: str, target: str, transform: bool = True) -> CEAlignResult:
 
 
 @mcp.tool()
+@surface_pymol_error
 def rms(mobile: str, target: str, fit: bool = False, matchmaker: int = 0) -> float:
     """
     Compute RMSD between two selections without superposition.

@@ -251,6 +251,114 @@ class TestSession:
         assert fake_pymol.echo_calls == [99]
 
 
+class TestSurfacePyMOLError:
+    """The `surface_pymol_error` decorator must fold the plugin's captured
+    stdout and traceback into the `ToolError` message, since FastMCP only
+    surfaces `str(exception)` to the agent.
+    """
+
+    def test_surfaces_type_message_stdout_and_traceback(self) -> None:
+        from mcp.server.fastmcp.exceptions import ToolError
+
+        from agentic_pymol.app import surface_pymol_error
+        from agentic_pymol.errors import PyMOLError
+
+        @surface_pymol_error
+        def boom() -> None:
+            raise PyMOLError(
+                "KeyError",
+                "'missing'",
+                (
+                    "Traceback (most recent call last):\n"
+                    '  File "x.py", line 3, in boom\n'
+                    '    x["missing"]'
+                ),
+                "step 1 done\nstep 2 done",
+            )
+
+        with pytest.raises(ToolError) as excinfo:
+            boom()
+        message = str(excinfo.value)
+        assert "KeyError: 'missing'" in message
+        assert "--- stdout ---" in message
+        assert "step 1 done" in message
+        assert "step 2 done" in message
+        assert "--- traceback ---" in message
+        assert "in boom" in message
+        assert isinstance(excinfo.value.__cause__, PyMOLError)
+
+    def test_omits_empty_stdout_and_traceback_sections(self) -> None:
+        from mcp.server.fastmcp.exceptions import ToolError
+
+        from agentic_pymol.app import surface_pymol_error
+        from agentic_pymol.errors import PyMOLError
+
+        @surface_pymol_error
+        def boom() -> None:
+            raise PyMOLError("CmdException", "Selection name invalid", "", "")
+
+        with pytest.raises(ToolError) as excinfo:
+            boom()
+        message = str(excinfo.value)
+        assert message == "CmdException: Selection name invalid"
+
+    def test_non_pymol_errors_pass_through_unchanged(self) -> None:
+        from agentic_pymol.app import surface_pymol_error
+
+        @surface_pymol_error
+        def boom() -> None:
+            raise ValueError("not a PyMOL error")
+
+        with pytest.raises(ValueError, match="not a PyMOL error"):
+            boom()
+
+    def test_signature_preserved_for_fastmcp_introspection(self) -> None:
+        """FastMCP calls `inspect.signature(func, eval_str=True)` (default
+        `follow_wrapped=True`) to build the tool's input schema. The
+        decorator must keep that signature accessible — `@functools.wraps`
+        sets `__wrapped__`, which `inspect.signature` follows automatically.
+        """
+        import inspect
+
+        from agentic_pymol.app import surface_pymol_error
+
+        @surface_pymol_error
+        def example(a: int, b: str = "default") -> bool:  # noqa: ARG001
+            return True
+
+        sig = inspect.signature(example, eval_str=True)
+        params = list(sig.parameters.values())
+        assert [p.name for p in params] == ["a", "b"]
+        assert params[0].annotation is int
+        assert params[1].annotation is str
+        assert params[1].default == "default"
+        assert sig.return_annotation is bool
+
+    def test_decoration_applied_to_every_registered_tool(self, server_module: Any) -> None:
+        """Guard against forgetting `@surface_pymol_error` on a future tool.
+
+        Every public tool function across the five tool modules must be wrapped
+        by the decorator. The wrapped function exposes `__wrapped__` (via
+        `functools.wraps`), so the check is just: `__wrapped__` exists and the
+        outer `__qualname__` is `inner` (the wrapper inside
+        `surface_pymol_error`).
+        """
+        from agentic_pymol.tools import align, data, io, query, session
+
+        tool_modules = [align, data, io, query, session]
+        offenders: list[str] = []
+        for module in tool_modules:
+            for name in dir(module):
+                fn = getattr(module, name)
+                if not callable(fn) or name.startswith("_") or not hasattr(fn, "__module__"):
+                    continue
+                if fn.__module__ != module.__name__:
+                    continue
+                if not hasattr(fn, "__wrapped__"):
+                    offenders.append(f"{module.__name__}.{name} is missing @surface_pymol_error")
+        assert not offenders, "\n".join(offenders)
+
+
 class TestEnvelopeValidation:
     """`OkResponse.from_envelope` must reject malformed plugin responses with PyMOLError."""
 

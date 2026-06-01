@@ -5,10 +5,11 @@ from typing import Any
 
 from mcp.server.fastmcp import Image
 
-from agentic_pymol.app import client, mcp
+from agentic_pymol.app import client, mcp, surface_pymol_error
 
 
 @mcp.tool()
+@surface_pymol_error
 def fetch(code: str, name: str = "", type: str = "cif", path: str = "") -> str:
     """
     Fetch a structure from RCSB and load it. Synchronous (async_=0).
@@ -30,6 +31,7 @@ def fetch(code: str, name: str = "", type: str = "cif", path: str = "") -> str:
 
 
 @mcp.tool()
+@surface_pymol_error
 def load(filename: str, object_name: str = "", state: int = 0, format: str = "") -> str:
     """
     Load a local structure file (PDB, CIF, MOL2, SDF, MAE, ...).
@@ -51,6 +53,7 @@ def load(filename: str, object_name: str = "", state: int = 0, format: str = "")
 
 
 @mcp.tool()
+@surface_pymol_error
 def save(filename: str, selection: str = "all", state: int = -1, format: str = "") -> str:
     """
     Save a selection to disk. Format is detected from the extension if not given.
@@ -68,6 +71,7 @@ def save(filename: str, selection: str = "all", state: int = -1, format: str = "
 
 
 @mcp.tool()
+@surface_pymol_error
 def render(
     filename: str, width: int = 1024, height: int = 768, dpi: float = -1.0, ray: bool = True
 ) -> str:
@@ -86,6 +90,7 @@ def render(
 
 
 @mcp.tool()
+@surface_pymol_error
 def screenshot(width: int = 800, height: int = 600, ray: bool = False) -> Image:
     """
     Capture the current PyMOL viewport and return the PNG inline so the model

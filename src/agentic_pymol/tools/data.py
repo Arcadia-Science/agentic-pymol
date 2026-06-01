@@ -1,11 +1,12 @@
 from __future__ import annotations
 from typing import Any
 
-from agentic_pymol.app import client, mcp
+from agentic_pymol.app import client, mcp, surface_pymol_error
 from agentic_pymol.types import Atom, Model
 
 
 @mcp.tool()
+@surface_pymol_error
 def iterate(selection: str, properties: list[str], state: int = -1) -> list[dict[str, Any]]:
     """
     Iterate atoms in a selection and return per-atom property dicts. Coordinates
@@ -27,6 +28,7 @@ def iterate(selection: str, properties: list[str], state: int = -1) -> list[dict
 
 
 @mcp.tool()
+@surface_pymol_error
 def alter(selection: str, expression: str) -> int:
     """
     Modify atom attributes from a Python expression evaluated once per atom.
@@ -44,6 +46,7 @@ def alter(selection: str, expression: str) -> int:
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_model(selection: str = "all", state: int = 1) -> Model:
     """
     Structured snapshot of atoms in a selection. For just coordinates use
@@ -56,6 +59,7 @@ def get_model(selection: str = "all", state: int = 1) -> Model:
 
 
 @mcp.tool()
+@surface_pymol_error
 def get_fastastr(selection: str = "all", state: int = -1) -> str:
     """Return the FASTA-formatted protein sequence(s) of a selection."""
     response = client.call("get_fastastr", [selection], {"state": state}, "get_fastastr")

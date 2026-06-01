@@ -142,7 +142,7 @@ class PyMOLClient:
         self,
         selection: str,
         properties: list[str],
-        state: int | None,
+        state: int,
         tool_name: str,
         timeout: float | None = None,
     ) -> OkResponse:

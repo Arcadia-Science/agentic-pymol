@@ -284,6 +284,8 @@ def _handle_iterate(request: dict[str, Any]) -> dict[str, Any]:
             return _error_response("BadRequest", f"invalid property identifier: {p!r}", "", "")
     if not properties:
         return _error_response("BadRequest", "properties must not be empty", "", "")
+    if not isinstance(state, int) or isinstance(state, bool):
+        return _error_response("BadRequest", "state must be an int", "", "")
 
     from pymol import cmd
 
@@ -294,9 +296,7 @@ def _handle_iterate(request: dict[str, Any]) -> dict[str, Any]:
     space: dict[str, Any] = {"_acc": [], "_overflow": []}
 
     def thunk():
-        if state is None:
-            return cmd.iterate(selection, expression, space=space)
-        return cmd.iterate_state(int(state), selection, expression, space=space)
+        return cmd.iterate_state(state, selection, expression, space=space)
 
     logger.info(
         f"PyMOL MCP iterate: selection={selection!r}, properties={properties!r}, state={state!r}"

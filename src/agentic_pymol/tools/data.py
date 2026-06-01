@@ -8,20 +8,21 @@ from agentic_pymol.types import Atom, Model
 @mcp.tool()
 def iterate(selection: str, properties: list[str], state: int = -1) -> list[dict[str, Any]]:
     """
-    Iterate over atoms in a selection and return per-atom property dicts.
+    Iterate atoms in a selection and return per-atom property dicts. Coordinates
+    (x, y, z) and any state-dependent attributes are available.
 
     `properties`: list of PyMOL atom attribute names —
         e.g. ["resi", "resn", "name", "chain", "b", "x", "y", "z"].
-    `state`: -1 (default) uses `cmd.iterate` (state-independent attrs only — no x/y/z).
-              0+ uses `cmd.iterate_state(state, ...)` and exposes coordinates.
+    `state`: PyMOL convention — -1 (default) = current state, 1..N = specific
+        state. state=0 means "all states" and yields N_atoms × N_states rows;
+        reach for it only when you genuinely want every frame.
 
     Capped at 200 000 rows. Selection identifiers must be valid Python attribute names.
 
     The dict shape is caller-defined via `properties`, so this tool returns
     `list[dict]` rather than a typed dataclass.
     """
-    state_arg: int | None = None if state < 0 else state
-    response = client.iterate(selection, properties, state_arg, "iterate")
+    response = client.iterate(selection, properties, state, "iterate")
     return response.value
 
 

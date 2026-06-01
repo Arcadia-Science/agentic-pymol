@@ -13,7 +13,7 @@ def fetch(code: str, name: str = "", type: str = "cif", path: str = "") -> str:
     """
     Fetch a structure from RCSB and load it. Synchronous (async_=0).
 
-    `code`: PDB code or comma-separated codes.
+    `code`: PDB code, or space-separated codes to fetch several at once.
     `name`: optional object name (defaults to `code`).
     `type`: file type — "cif" (default), "pdb", "pdb1", "2fofc", "fofc", "mmtf".
     `path`: download cache directory; empty string uses PyMOL default.

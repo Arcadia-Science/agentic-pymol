@@ -112,9 +112,10 @@ class TestData:
         ]
         result = tools.data.iterate("chain A", ["resi", "name"], state=-1)
         assert result == fake_pymol.iterate_rows
-        args, _ = _last_call(fake_pymol, "iterate")
-        assert args[0] == "chain A"
-        assert '"resi": resi' in args[1] and '"name": name' in args[1]
+        args, _ = _last_call(fake_pymol, "iterate_state")
+        assert args[0] == -1
+        assert args[1] == "chain A"
+        assert '"resi": resi' in args[2] and '"name": name' in args[2]
 
     def test_iterate_with_state_uses_iterate_state(self, tools: Any, fake_pymol: FakeCmd) -> None:
         fake_pymol.iterate_rows = [{"x": 1.0}]

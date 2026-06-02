@@ -86,17 +86,8 @@ For Claude Code:
 claude mcp add --scope user pymol /absolute/path/to/agentic-pymol/.venv/bin/agentic-pymol
 ```
 
-For Claude Desktop, add this to `~/Library/Application Support/Claude/claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "pymol": {
-      "command": "/absolute/path/to/agentic-pymol/.venv/bin/agentic-pymol"
-    }
-  }
-}
-```
+> [!NOTE]
+> Using a different MCP client? Please [open a GitHub issue](https://github.com/Arcadia-Science/agentic-pymol/issues), or even better, send a [pull request](https://github.com/Arcadia-Science/agentic-pymol/pulls) adding the registration instructions for your client.
 
 ### 4. Verify
 

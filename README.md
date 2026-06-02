@@ -41,7 +41,7 @@ Load these two structures, align chain A, report the RMSD, and show the regions 
 Which of these 10 binders trigger a conformational shift in the target activation loop?
 ```
 
-Because the tool surface is typed, agents can reason over results instead of merely seeing that a command succeeded. Distances, RMSDs, object lists, atom counts, coordinates, and views come back as data.
+Because the tool surface is typed, agents can easily reason over results. Distances, RMSDs, object lists, atom counts, coordinates, and views come back as data.
 
 ## Design goals
 

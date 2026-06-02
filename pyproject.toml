@@ -1,7 +1,7 @@
 [project]
 name = "agentic-pymol"
-version = "0.0.0"
-description = "An MCP server that gives PyMOL to language-model agents as a typed tool surface with shared-secret auth and timeout-triggered cancellation."
+version = "1.0.0"
+description = "An MCP server that gives PyMOL to language-model agents as a typed tool surface."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

@@ -9,8 +9,6 @@ keywords = ["mcp", "pymol", "agents", "structural-biology"]
 classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 dependencies = [

@@ -151,9 +151,16 @@ On first listen, the plugin auto-generates a token at:
 
 The file is written with mode `0600`. The MCP server reads the same path by default, or you can override it with `PYMOL_MCP_TOKEN`.
 
-### Port discovery
+### Sessions
 
-The plugin writes its actually-bound port to `~/.config/pymol-mcp/port` once the listening socket is up, and removes the file on shutdown. The MCP server reads that file when `PYMOL_MCP_PORT` is unset, so changing the port in the plugin's dialog doesn't require any matching change on the server side. Precedence: `PYMOL_MCP_PORT` env > `~/.config/pymol-mcp/port` > default (9877).
+Currently Agentic PyMOL supports **one** PyMOL session bridged to **one** MCP server. Multiple agent conversations can talk to that single PyMOL concurrently, but a single MCP server doesn't currently see more than one PyMOL session at a time. Multi-session support is a candidate future feature. Please open an issue if it would help your workflow.
+
+The plugin defaults to port 9877. You can choose a different port during the "start listening" dialog box in the PyMOL plugin, and setting the MCP server's `PYMOL_MCP_PORT` env var to match. For example, using Claude Code:
+
+```bash
+$ export PYMOL_MCP_PORT=9870
+$ claude
+```
 
 ## Development
 

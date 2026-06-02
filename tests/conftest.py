@@ -222,12 +222,11 @@ def fake_pymol(fake_cmd: FakeCmd) -> Iterator[FakeCmd]:
 
 
 @pytest.fixture
-def plugin_module(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Any]:
+def plugin_module() -> Iterator[Any]:
     import logging
 
     import pymol_plugin
 
-    monkeypatch.setattr(pymol_plugin, "PORT_PATH", tmp_path / "port")
     pymol_plugin._token = None
     pymol_plugin.socket_server = None
     pymol_plugin.listening = False

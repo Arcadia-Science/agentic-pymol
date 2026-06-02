@@ -53,8 +53,6 @@ LENGTH_HEADER = struct.Struct(">I")
 TOKEN_PATH = Path.home() / ".config" / "pymol-mcp" / "token"
 TOKEN_BYTES = 32
 
-PORT_PATH = Path.home() / ".config" / "pymol-mcp" / "port"
-
 ITERATE_ROW_LIMIT = 200_000
 IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z_0-9]*$")
 
@@ -389,31 +387,6 @@ def _error_response(error_type: str, message: str, tb: str, stdout: str) -> dict
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def _write_port_file(port: int) -> None:
-    """Advertise the actually-bound port to the MCP-side client.
-
-    Atomic write via tmp+rename so a concurrent reader can't observe a half-
-    written file. Mirrors the token-file pattern in AUTH: the MCP server
-    treats `~/.config/pymol-mcp/port` as the source of truth when the
-    `PYMOL_MCP_PORT` env var is unset.
-    """
-    PORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    tmp = PORT_PATH.with_suffix(".tmp")
-    tmp.write_text(str(port))
-    tmp.replace(PORT_PATH)
-
-
-def _remove_port_file() -> None:
-    """Withdraw the advertisement when the listening socket closes.
-
-    A stale file pointing at a port nobody's listening on would make the
-    MCP server's connect attempt fail with a misleading "is PyMOL running?"
-    error; removing on shutdown lets the server fall back to the default
-    port instead.
-    """
-    PORT_PATH.unlink(missing_ok=True)
-
-
 class SocketServer:
     def __init__(self, host: str = "127.0.0.1", port: int = DEFAULT_PORT):
         self.host = host
@@ -448,11 +421,9 @@ class SocketServer:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.bind((self.host, self.port))
-            bound_port = self.socket.getsockname()[1]
-            _write_port_file(bound_port)
             self.socket.listen(4)
             self.socket.settimeout(0.1)
-            logger.info(f"PyMOL MCP socket server listening on {self.host}:{bound_port}")
+            logger.info(f"PyMOL MCP socket server listening on {self.host}:{self.port}")
             while self.running:
                 try:
                     client, address = self.socket.accept()
@@ -472,7 +443,6 @@ class SocketServer:
                     self.socket.close()
                 except OSError:
                     pass
-            _remove_port_file()
             logger.info("PyMOL MCP socket server stopped")
 
     def _serve_client(self, client: socket.socket) -> None:

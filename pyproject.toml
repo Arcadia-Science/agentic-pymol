@@ -1,0 +1,76 @@
+[project]
+name = "agentic-pymol"
+version = "1.0.0"
+description = "An MCP server that gives PyMOL to language-model agents as a typed tool surface."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["mcp", "pymol", "agents", "structural-biology"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "mcp[cli]>=1.0.0",
+]
+
+[project.scripts]
+agentic-pymol = "agentic_pymol.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentic_pymol"]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0",
+    "pyright>=1.1.400",
+    "pytest>=8.3",
+    "ruff>=0.7",
+]
+
+[tool.ruff]
+src = ["src"]
+include = [
+    "src/agentic_pymol/**/*.py",
+    "pymol_plugin/**/*.py",
+    "tests/**/*.py",
+]
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "E",  # pycodestyle error
+    "F",  # pyflakes
+    "I",  # isort
+    "UP", # pyupgrade
+    "W",  # pycodestyle warning
+]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+order-by-type = true
+no-lines-before = ["future", "standard-library"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.pyright]
+typeCheckingMode = "basic"
+include = ["src/agentic_pymol", "pymol_plugin", "tests"]
+exclude = ["./.venv", "./dist"]
+reportUnknownMemberType = false

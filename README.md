@@ -2,48 +2,28 @@
 
 https://github.com/user-attachments/assets/43524828-0fcc-44e5-bcd6-c912e7f865b1
 
+## Description
+
 A lightweight Model Context Protocol (MCP) server that exposes PyMOL as a typed tool surface for general-purpose agents.
 
 Use it with Claude Code, Claude Desktop, Codex, or any MCP-compatible client to let your agent control an open PyMOL session, inspect molecular structures, run PyMOL-native analyses, and render what it sees.
 
 Agentic PyMOL is not an embedded chatbot and not a molecular workbench. It is a small bridge between a capable agent and the PyMOL session you already use.
 
-## Why this exists
-
-PyMOL is more than a visualization tool. It is also a mature structural-biology analysis environment: it knows about selections, objects, chains, states, coordinates, alignments, RMSD, distances, atom tables, scenes, views, and rendered molecular figures.
-
-Most LLM/PyMOL integrations focus on one of two patterns:
-
-1. put a chat interface inside PyMOL, or
-2. expose PyMOL as a mostly untyped command runner.
-
-Agentic PyMOL takes a narrower approach: expose PyMOL itself as a typed, composable tool that an external agent can use alongside everything else it already knows how to use: files, shell, git, papers, notebooks, local data, and other MCP servers.
-
-The key difference is two-way communication. The agent can take action in your live PyMOL session -- fetch structures, change representations, make selections, align objects, render figures -- and it can also read structured information back out of that same session: loaded objects, chains, atom counts, coordinates, distances, RMSDs, views, sequences, and errors. That makes PyMOL usable not only as something the agent drives, but as something the agent can inspect, reason over, summarize for the user, and pass into downstream work.
-
-This keeps the project deliberately small. Agentic PyMOL does not bundle docking, conservation analysis, sequence search, structure prediction, or external biology APIs. Those are valuable workflows that belong elsewhere. This server focuses on giving agents reliable two-way access to PyMOL-native capabilities.
-
 ## What you can do
 
 Ask your agent to use PyMOL directly:
 
 ```text
-Fetch ubiquitin, show it as cartoon, color by secondary structure, and render a PNG.
+* Fetch ubiquitin, show it as cartoon, color by secondary structure, and render a PNG.
+* Create a table of residues that are in contact with DNA in the DNA-binding protein 6EDC.
+* Load these two structures, align chain A, report the RMSD, and show the regions that moved the most.
+* Which of these 10 binders trigger a conformational shift in the target activation loop?
 ```
 
-```text
-Create a table of residues that are in contact with DNA in the DNA-binding protein 6EDC.
-```
+For a brief showcase of abilities, see this 6-minute demonstration of how you can use Agentic PyMOL to conduct meaningful structural analysis with natural language:
 
-```text
-Load these two structures, align chain A, report the RMSD, and show the regions that moved the most.
-```
-
-```text
-Which of these 10 binders trigger a conformational shift in the target activation loop?
-```
-
-Because the tool surface is typed, agents can easily reason over results. Distances, RMSDs, object lists, atom counts, coordinates, and views come back as data.
+[![Agentic PyMOL demonstration](https://img.youtube.com/vi/0peLwtqQX7I/maxresdefault.jpg)](https://www.youtube.com/watch?v=0peLwtqQX7I)
 
 ## Design goals
 
@@ -55,6 +35,10 @@ Because the tool surface is typed, agents can easily reason over results. Distan
 - **Lightweight and composable.** Do not bundle docking, sequence search, conservation analysis, prediction services, or external biology APIs; let other tools handle those jobs.
 
 ## Install
+
+For a video walkthrough of the setup, watch this explanation:
+
+[![Agentic PyMOL setup walkthrough](https://img.youtube.com/vi/xhaW-id0eu0/maxresdefault.jpg)](https://youtu.be/xhaW-id0eu0)
 
 Requires:
 
@@ -91,62 +75,18 @@ claude mcp add --scope user pymol /absolute/path/to/agentic-pymol/.venv/bin/agen
 > [!NOTE]
 > Using a different MCP client? Please [open a GitHub issue](https://github.com/Arcadia-Science/agentic-pymol/issues), or even better, send a [pull request](https://github.com/Arcadia-Science/agentic-pymol/pulls) adding the registration instructions for your client.
 
-### 4. Verify
+**This concludes the one-time setup for Agentic PyMOL**. See the next section to learn how to connect your newly installed PyMOL plugin to your newly  If you followed steps 1-3, you've successfully installed Agentic PyMOL.
 
-Start a new conversation in your MCP client and ask:
+You've now successfully installed Agentic PyMOL. See the next section for how to use it.
 
-```text
-Use the PyMOL status tool and tell me what is currently loaded.
-```
+## How to use
 
-If PyMOL is running and the plugin is listening, the tool should return a structured `Status` snapshot.
+Before your agent can control PyMOL, you must tell the plugin to start listening. **You have to do this each PyMOL session**. In PyMOL, open *Plugin → agentic-pymol plugin → Start Listening*. This opens the socket that the MCP server connects to.
 
-Then try:
+![Agentic PyMOL plugin](assets/plugin.png)
 
-```text
-Fetch ubiquitin in PyMOL and visualize it as a cartoon.
-```
-
-You should see PyMOL update live.
-
-## Architecture
-
-```text
-Agent --> MCP (stdio) -->  agentic_pymol/server.py --> TCP/JSON --> PyMOL plugin --> cmd.* --> PyMOL
-```
-
-Agentic PyMOL has two pieces:
-
-1. an MCP server launched by your client over stdio, and
-2. a small PyMOL plugin that listens on a local TCP socket.
-
-The MCP server is a thin bridge. It validates tool inputs, sends requests to the PyMOL plugin, and returns structured outputs to the agent.
-
-The plugin runs inside PyMOL and dispatches requests to `pymol.cmd`.
-
-The wire protocol between the server and plugin is length-prefixed JSON:
-
-```text
-4-byte big-endian payload length + UTF-8 JSON body
-```
-
-Messages are capped at 4 MB.
-
-### Authentication
-
-The plugin binds to `127.0.0.1` only and requires a shared-secret token on every request.
-
-On first listen, the plugin auto-generates a token at:
-
-```text
-~/.config/pymol-mcp/token
-```
-
-The file is written with mode `0600`. The MCP server reads the same path by default, or you can override it with `PYMOL_MCP_TOKEN`.
-
-### Sessions
-
-Currently Agentic PyMOL supports **one** PyMOL session bridged to **one** MCP server. Multiple agent conversations can talk to that single PyMOL concurrently, but a single MCP server doesn't currently see more than one PyMOL session at a time. Multi-session support is a candidate future feature. Please open an issue if it would help your workflow.
+> [!NOTE]
+> Currently Agentic PyMOL supports **one** PyMOL session bridged to **one** MCP server. Multiple agent conversations can talk to that single PyMOL concurrently, but a single MCP server doesn't currently see more than one PyMOL session at a time. Multi-session support is a candidate future feature. Please open an issue if it would help your workflow.
 
 The plugin defaults to port 9877. You can choose a different port during the "start listening" dialog box in the PyMOL plugin, and setting the MCP server's `PYMOL_MCP_PORT` env var to match. For example, using Claude Code:
 
@@ -155,14 +95,10 @@ $ export PYMOL_MCP_PORT=9870
 $ claude
 ```
 
-## Development
+You can now communicate with PyMOL through your LLM. Test it out:
 
-```bash
-make test         # pytest
-make typecheck    # pyright
-make lint         # ruff check + ruff format --check
-make format       # ruff format + ruff check --fix
-make pre-commit   # run all hooks against all files
+```text
+Fetch ubiquitin and color by secondary structure
 ```
 
 ## Similar projects
@@ -175,3 +111,22 @@ Agentic PyMOL is not the first PyMOL/LLM integration. Agentic PyMOL is intention
 - [ChatMol](https://chatmol.github.io/ChatMol/) - a broader molecular-design assistant with a PyMOL plugin, PyMOL skill, Streamlit interface, Python package, and copilot-style workflows. It is closer to a molecular-agent environment than a bridge between your existing LLM agent and PyMOL. Creates an insular environment.
 - [`ravishar313/PyMolAI`](https://github.com/ravishar313/PyMolAI) - an AI-oriented fork of open-source PyMOL with a Qt chat panel, internal PyMOL tools, model-provider integration, and optional OpenBio tools. Creates an insular environment.
 - [`pymol-agent-bridge`](https://github.com/ANaka/pymol-agent-bridge) - an interesting MCP-less socket bridge that lets terminal-capable agents send Python/PyMOL commands to a live PyMOL session. `pymol-agent-bridge` is a CLI/library bridge.
+
+## How to cite
+
+If you use/reference this tool in your research, please cite the following work:
+
+[Agentic PyMOL: Structural analysis in PyMOL through natural language](https://thestacks.org/publications/resource-agentic-pymol/)
+
+```bib
+@article{Golden2026Agentic,
+	author = {Golden, James R. and Kiefl, Evan},
+	journal = {The Stacks},
+	doi = {10.57844/arcadia-gsbx-phd2},
+	year = {2026},
+	month = {jun 2},
+	publisher = {The Stacks},
+	title = {Agentic {PyMOL}: Structural analysis in {PyMOL} through natural language},
+	url = {https://thestacks.org/publications/resource-agentic-pymol/v1/v1},
+}
+```

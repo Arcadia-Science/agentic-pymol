@@ -104,7 +104,7 @@ Fetch ubiquitin and color by secondary structure
 Agentic PyMOL is not the first PyMOL/LLM integration. Agentic PyMOL is intentionally narrow: a lightweight, typed MCP bridge to the PyMOL installation you already use. These projects explore nearby ideas with different emphases.
 
 - [`vrtejus/pymol-mcp`](https://github.com/vrtejus/pymol-mcp) - Early demonstrator of the core value of connecting PyMOL to LLM agents through MCP. Agentic PyMOL builds on that idea with typed tool outputs, structured session readback, and shared-secret authentication.
-- [MCPymol](https://github.com/chemrich/MCPymol) - a PyMOL MCP server that leverages the MCP as a thin command tunnel to carry out specific visualization-oriented workflows. In comparison, Agentic PyMOL is focused on supporting a lightweight and unopinionated tool surface that returns structured data to the LLM instead of simple "command succeeded" messages.
+- [MCPymol](https://github.com/chemrich/MCPymol) - a PyMOL MCP server that leverages the MCP as a thin command tunnel to carry out specific visualization-oriented workflows. In comparison, Agentic PyMOL is focused on supporting a lightweight and unopinionated tool surface that returns structured data to the LLM.
 - [`nagarh/pymol-claude-code`](https://github.com/nagarh/pymol-claude-code) - a compact Claude Code-only MCP that controls PyMOL through its XML-RPC mode (`pymol -R`) that requires launching PyMOL from the command line. This shares the goal of giving agents live access to PyMOL, but opts for just three MCP tools (`run_command`, `run_python`, `pymol_get`). In contrast, Agentic PyMOL surfaces discoverable tools with structured readback.
 - [ChatMol](https://chatmol.github.io/ChatMol/) - a broader molecular-design assistant with a PyMOL plugin, PyMOL skill, Streamlit interface, Python package, and copilot-style workflows. It is closer to a molecular-agent environment than a bridge between your existing LLM agent and PyMOL. Creates an insular environment.
 - [`ravishar313/PyMolAI`](https://github.com/ravishar313/PyMolAI) - an AI-oriented fork of open-source PyMOL with a Qt chat panel, internal PyMOL tools, model-provider integration, and optional OpenBio tools. Creates an insular environment.
@@ -122,9 +122,9 @@ If you use/reference this tool in your research, please cite the following work:
 	journal = {The Stacks},
 	doi = {10.57844/arcadia-gsbx-phd2},
 	year = {2026},
-	month = {jun 2},
-	publisher = {The Stacks},
+	month = {jun 3},
+	publisher = {Radial},
 	title = {Agentic {PyMOL}: Structural analysis in {PyMOL} through natural language},
-	url = {https://thestacks.org/publications/resource-agentic-pymol/v1/v1},
+	url = {https://thestacks.org/publications/resource-agentic-pymol/v1},
 }
 ```

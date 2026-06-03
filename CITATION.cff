@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: If you use this software, please cite the associated publication.
+title: 'Agentic PyMOL: structural analysis in PyMOL through natural language'
+doi: 10.57844/arcadia-gsbx-phd2
+authors:
+- family-names: Golden
+  given-names: James R.
+  affiliation: Arcadia Science
+  orcid: https://orcid.org/0000-0002-9411-9680
+- family-names: Kiefl
+  given-names: Evan
+  affiliation: Arcadia Science
+  orcid: https://orcid.org/0000-0002-6473-0921
+preferred-citation:
+  title: 'Agentic PyMOL: structural analysis in PyMOL through natural language'
+  type: article
+  doi: 10.57844/arcadia-gsbx-phd2
+  authors:
+  - family-names: Golden
+    given-names: James R.
+    affiliation: Arcadia Science
+    orcid: https://orcid.org/0000-0002-9411-9680
+  - family-names: Kiefl
+    given-names: Evan
+    affiliation: Arcadia Science
+    orcid: https://orcid.org/0000-0002-6473-0921
+  year: 2026

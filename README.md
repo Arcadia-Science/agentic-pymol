@@ -1,8 +1,6 @@
 # Agentic PyMOL
 
-<video src="https://raw.githubusercontent.com/Arcadia-Science/agentic-pymol/ek/initial-dev/assets/demo.mp4" controls loop muted playsinline width="100%">
-  <a href="assets/demo.mp4">Watch the demo</a>
-</video>
+https://github.com/user-attachments/assets/43524828-0fcc-44e5-bcd6-c912e7f865b1
 
 A lightweight Model Context Protocol (MCP) server that exposes PyMOL as a typed tool surface for general-purpose agents.
 

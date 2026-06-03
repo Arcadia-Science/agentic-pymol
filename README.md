@@ -1,5 +1,9 @@
 # Agentic PyMOL
 
+<video src="https://raw.githubusercontent.com/Arcadia-Science/agentic-pymol/ek/initial-dev/assets/demo.mp4" controls loop muted playsinline width="100%">
+  <a href="assets/demo.mp4">Watch the demo</a>
+</video>
+
 A lightweight Model Context Protocol (MCP) server that exposes PyMOL as a typed tool surface for general-purpose agents.
 
 Use it with Claude Code, Claude Desktop, Codex, or any MCP-compatible client to let your agent control an open PyMOL session, inspect molecular structures, run PyMOL-native analyses, and render what it sees.

@@ -23,7 +23,7 @@ Ask your agent to use PyMOL directly:
 
 For a brief showcase of abilities, see this 6-minute demonstration of how you can use Agentic PyMOL to conduct meaningful structural analysis with natural language:
 
-[![Agentic PyMOL demonstration](https://img.youtube.com/vi/0peLwtqQX7I/maxresdefault.jpg)](https://www.youtube.com/watch?v=0peLwtqQX7I)
+[![Agentic PyMOL demonstration](assets/youtube_demo.jpg)](https://www.youtube.com/watch?v=0peLwtqQX7I)
 
 ## Design goals
 
@@ -38,7 +38,7 @@ For a brief showcase of abilities, see this 6-minute demonstration of how you ca
 
 For a video walkthrough of the setup, watch this explanation:
 
-[![Agentic PyMOL setup walkthrough](https://img.youtube.com/vi/xhaW-id0eu0/maxresdefault.jpg)](https://youtu.be/xhaW-id0eu0)
+[![Agentic PyMOL setup walkthrough](assets/youtube_setup.jpg)](https://youtu.be/xhaW-id0eu0)
 
 Requires:
 
@@ -75,9 +75,7 @@ claude mcp add --scope user pymol /absolute/path/to/agentic-pymol/.venv/bin/agen
 > [!NOTE]
 > Using a different MCP client? Please [open a GitHub issue](https://github.com/Arcadia-Science/agentic-pymol/issues), or even better, send a [pull request](https://github.com/Arcadia-Science/agentic-pymol/pulls) adding the registration instructions for your client.
 
-**This concludes the one-time setup for Agentic PyMOL**. See the next section to learn how to connect your newly installed PyMOL plugin to your newly  If you followed steps 1-3, you've successfully installed Agentic PyMOL.
-
-You've now successfully installed Agentic PyMOL. See the next section for how to use it.
+**You've successfully installed Agentic PyMOL**. See the next section for how to use it.
 
 ## How to use
 

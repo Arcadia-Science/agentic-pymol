@@ -69,7 +69,7 @@ In PyMOL:
 
 ### 3. Register the MCP server
 
-**For Claude Code:**
+**Claude Code:**
 
 ```bash
 claude mcp add --scope user pymol /absolute/path/to/agentic-pymol/.venv/bin/agentic-pymol
@@ -83,7 +83,7 @@ claude mcp list
 
 ---
 
-**For Codex CLI:**
+**Codex CLI:**
 
 ```bash
 codex mcp add pymol -- /absolute/path/to/agentic-pymol/.venv/bin/agentic-pymol
@@ -94,6 +94,8 @@ Verify the MCP server is registered:
 ```bash
 codex mcp list
 ```
+
+---
 
 > [!NOTE]
 > Using a different MCP client? Please [open a GitHub issue](https://github.com/Arcadia-Science/agentic-pymol/issues), or even better, send a [pull request](https://github.com/Arcadia-Science/agentic-pymol/pulls) adding the registration instructions for your client.

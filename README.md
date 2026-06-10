@@ -64,6 +64,9 @@ In PyMOL:
 2. Select `pymol_plugin/__init__.py` from this repo.
 3. Open **Plugin → agentic-pymol plugin → Start Listening**.
 
+> [!WARNING]
+> PyMOL 3.1.0 built against PyQt6 (e.g. the current Homebrew `pymol` 3.1.0 on macOS) **crashes during the installation above**. This is an [upstream PyMOL bug](https://github.com/schrodinger/pymol-open-source/issues/498). If you encounter this issue, there is a **simple workaround** here: https://github.com/Arcadia-Science/agentic-pymol/issues/3#issuecomment-4673331480.
+
 ### 3. Register the MCP server
 
 For Claude Code:

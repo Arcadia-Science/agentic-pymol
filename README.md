@@ -97,6 +97,18 @@ codex mcp list
 
 ---
 
+**VS Code Copilot:**
+
+Add the following to your User mcp.json (MCP: Open User Configuration)
+```
+    "agentic-pymol": {
+      "type": "stdio",
+      "command": "/absolute/path/to/agentic-pymol/.venv/bin/agentic-pymol"
+    },
+```
+
+---
+
 > [!NOTE]
 > Using a different MCP client? Please [open a GitHub issue](https://github.com/Arcadia-Science/agentic-pymol/issues), or even better, send a [pull request](https://github.com/Arcadia-Science/agentic-pymol/pulls) adding the registration instructions for your client.
 

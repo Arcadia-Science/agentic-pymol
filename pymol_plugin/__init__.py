@@ -487,6 +487,35 @@ def run_plugin_gui() -> None:
     dialog.show()
 
 
+def start_listening(port: int = DEFAULT_PORT) -> bool:
+    """
+    Start the socket server, so the listener can be started without the plugin dialog.
+
+    Args:
+        port: the TCP port to listen on. Ignored if the listener is already running.
+
+    Returns:
+        True once the accept thread is running. This is not confirmation that the port was
+        bound: `bind` happens on that thread, and a failure there is only logged.
+    """
+    global socket_server, listening, current_port
+    if listening:
+        return True
+    current_port = port
+    socket_server = SocketServer(port=port)
+    if socket_server.start():
+        listening = True
+    return listening
+
+
+def stop_listening() -> None:
+    """Stop the socket server. Safe to call when it is not listening."""
+    global socket_server, listening
+    if socket_server:
+        socket_server.stop()
+    listening = False
+
+
 def make_dialog() -> Any:
     from pymol.Qt import QtWidgets
     from pymol.Qt.utils import loadUi
@@ -495,21 +524,18 @@ def make_dialog() -> Any:
     uifile = Path(__file__).parent / "plugin.ui"
     form = loadUi(uifile, dlg)
     form.input_port.setValue(current_port)
-    _set_status(form, "Not listening")
+    # The listener may already have been started without the dialog, so show its real state
+    # rather than assuming it is stopped.
+    form.button_toggle_listening.setText("Stop Listening" if listening else "Start Listening")
+    _set_status(form, f"Listening on port {current_port}" if listening else "Not listening")
 
     def toggle_listening() -> None:
-        global socket_server, listening, current_port
         if not listening:
-            current_port = form.input_port.value()
-            socket_server = SocketServer(port=current_port)
-            if socket_server.start():
-                listening = True
+            if start_listening(form.input_port.value()):
                 form.button_toggle_listening.setText("Stop Listening")
                 _set_status(form, f"Listening on port {current_port}")
         else:
-            if socket_server:
-                socket_server.stop()
-            listening = False
+            stop_listening()
             form.button_toggle_listening.setText("Start Listening")
             _set_status(form, "Not listening")
 

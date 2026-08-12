@@ -120,6 +120,15 @@ Before your agent can control PyMOL, you must tell the plugin to start listening
 
 ![Agentic PyMOL plugin](assets/plugin.png)
 
+You can also start it from PyMOL's prompt instead of the dialog, which is useful for scripted or headless sessions:
+
+```python
+from pymol_plugin import start_listening, stop_listening
+start_listening(9877)
+```
+
+`start_listening` returns once the accept thread is up; if the port turns out to be in use, that is reported in the log rather than through the return value.
+
 > [!NOTE]
 > Currently Agentic PyMOL supports **one** PyMOL session bridged to **one** MCP server. Multiple agent conversations can talk to that single PyMOL concurrently, but a single MCP server doesn't currently see more than one PyMOL session at a time. Multi-session support is a candidate future feature. Please open an issue if it would help your workflow.
 

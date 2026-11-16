@@ -134,6 +134,24 @@ class TestData:
 
 
 class TestIO:
+    def test_load_relative_path_uses_pymol_working_directory(
+        self, tools: Any, fake_pymol: FakeCmd, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        mcp_cwd = tmp_path / "mcp"
+        pymol_cwd = tmp_path / "pymol"
+        mcp_cwd.mkdir()
+        (pymol_cwd / "structures").mkdir(parents=True)
+        pdb = pymol_cwd / "structures" / "example.pdb"
+        pdb.write_text("HEADER\n")
+        monkeypatch.chdir(mcp_cwd)
+
+        def load_in_pymol(filename: str, **kwargs: Any) -> None:
+            # Emulate file lookup in the separate PyMOL process.
+            assert (pymol_cwd / filename).read_text() == "HEADER\n"
+
+        monkeypatch.setattr(fake_pymol, "load", load_in_pymol)
+        assert tools.io.load("structures/example.pdb") == "example"
+
     def test_fetch_passes_async_zero(self, tools: Any, fake_pymol: FakeCmd) -> None:
         result = tools.io.fetch("1ubq", name="ubq", type="pdb")
         assert result == "ubq"

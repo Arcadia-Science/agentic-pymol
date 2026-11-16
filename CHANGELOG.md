@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Resolve relative `load` filenames in PyMOL's working directory, as documented.
+
 ### Added
 
 - `pymol_plugin.start_listening(port)` and `pymol_plugin.stop_listening()`, so the socket

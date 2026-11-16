@@ -43,12 +43,12 @@ def load(filename: str, object_name: str = "", state: int = 0, format: str = "")
 
     Returns the object name actually used.
     """
-    resolved = Path(filename).expanduser().resolve()
-    derived_name = object_name or resolved.stem
+    path = Path(filename).expanduser()
+    derived_name = object_name or path.stem
     kwargs: dict[str, Any] = {"object": derived_name, "state": state}
     if format:
         kwargs["format"] = format
-    client.call("load", [str(resolved)], kwargs, "load")
+    client.call("load", [str(path)], kwargs, "load")
     return derived_name
 
 

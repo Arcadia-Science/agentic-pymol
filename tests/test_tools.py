@@ -105,6 +105,30 @@ class TestAlign:
 
 
 class TestData:
+    def test_get_model_detects_chempy_models_indexed(
+        self, tools: Any, fake_pymol: FakeCmd, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import sys
+        import types
+
+        from agentic_pymol.types import Atom, Model
+
+        class FakeIndexed:
+            def __init__(self) -> None:
+                self.atom = [types.SimpleNamespace(name="CA", coord=[1.0, 2.0, 3.0])]
+
+        # ChemPy exports Indexed from chempy.models, not its top-level package.
+        chempy = types.ModuleType("chempy")
+        models = types.ModuleType("chempy.models")
+        monkeypatch.setattr(models, "Indexed", FakeIndexed, raising=False)
+        monkeypatch.setitem(sys.modules, "chempy", chempy)
+        monkeypatch.setitem(sys.modules, "chempy.models", models)
+        monkeypatch.setattr(fake_pymol, "get_model_return", FakeIndexed())
+
+        assert tools.data.get_model("all") == Model(
+            atoms=[Atom(name="CA", coord=[1.0, 2.0, 3.0])], n_atoms=1
+        )
+
     def test_iterate_returns_rows(self, tools: Any, fake_pymol: FakeCmd) -> None:
         fake_pymol.iterate_rows = [
             {"resi": "1", "name": "CA"},

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Recognize ChemPy models returned by `get_model` so structured atom snapshots are returned.
+
 ### Added
 
 - `pymol_plugin.start_listening(port)` and `pymol_plugin.stop_listening()`, so the socket

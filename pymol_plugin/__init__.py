@@ -140,7 +140,7 @@ def _maybe_numpy():
 
 def _maybe_chempy_indexed():
     try:
-        from chempy import Indexed
+        from chempy.models import Indexed
 
         return Indexed
     except ImportError:

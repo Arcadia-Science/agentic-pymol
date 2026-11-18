@@ -10,7 +10,9 @@ from dataclasses import dataclass
 from typing import Any
 
 
-@dataclass(frozen=True, slots=True)
+# FastMCP reads class attributes as field defaults when building output schemas.
+# Keep tool result dataclasses unslotted so required fields are not slot descriptors.
+@dataclass(frozen=True)
 class Status:
     objects: list[str]
     selections: list[str]
@@ -18,13 +20,13 @@ class Status:
     state: int
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class RunResult:
     stdout: str
     value: Any
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Extent:
     min: list[float]
     max: list[float]
@@ -56,13 +58,13 @@ class Atom:
     coord: list[float] | None = None
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Model:
     atoms: list[Atom]
     n_atoms: int
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class AlignResult:
     rmsd_refined: float
     n_atoms_refined: int
@@ -73,7 +75,7 @@ class AlignResult:
     n_residues_aligned: int
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class CEAlignResult:
     RMSD: float
     alignment_length: int
